@@ -1,0 +1,29 @@
+{
+    "name": "xaoc-303/parser",
+    "require": {
+        "php": ">=7.1",
+        "clue/buzz-react": "^2.6",
+        "symfony/dom-crawler": "^4.3",
+        "symfony/css-selector": "^4.3",
+        "jonnyw/php-phantomjs": "4.*",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "php-curl-class/php-curl-class": "^8.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ],
+        "post-update-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ]
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}
