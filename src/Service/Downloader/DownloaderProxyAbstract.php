@@ -12,10 +12,10 @@ abstract class DownloaderProxyAbstract implements DownloaderInterface
     protected $timeStart;
     protected $timeStop;
 
-    public function download()
+    public function download($is_proxy = false)
     {
         $this->timeStart();
-        $this->downloader->download();
+        $this->downloader->download($is_proxy);
         $this->timeStop();
 
         echo microtime(true);

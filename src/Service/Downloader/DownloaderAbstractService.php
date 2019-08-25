@@ -13,6 +13,8 @@ abstract class DownloaderAbstractService implements DownloaderInterface
     protected $responseCode;
     protected $alias;
 
+    protected $client;
+
     public function __construct($urls, $alias)
     {
         $this->requestUrls = $urls;
@@ -47,6 +49,14 @@ abstract class DownloaderAbstractService implements DownloaderInterface
     public function getResponseCode()
     {
         return $this->responseCode;
+    }
+
+    public function getRequestHeaders()
+    {
+        return [
+            'Content-Type' => 'text/plain',
+            'User-Agent' => 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/7.0.540.0 Safari/534.10',
+        ];
     }
 
     public function saveToFile($prefix = false, $timeExec = false)

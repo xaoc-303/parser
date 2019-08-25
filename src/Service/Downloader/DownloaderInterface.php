@@ -4,7 +4,7 @@ namespace Service\Downloader;
 
 interface DownloaderInterface
 {
-    public function download();
+    public function download($is_proxy = false);
     public function getAlias();
     public function getResponses();
     public function getServiceName();

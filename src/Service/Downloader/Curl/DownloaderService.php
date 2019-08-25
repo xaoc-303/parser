@@ -4,28 +4,46 @@ namespace Service\Downloader\Curl;
 
 use Curl\Curl;
 use Service\Downloader\DownloaderAbstractService;
+use Service\Gateway\GatewayService;
 
 class DownloaderService extends DownloaderAbstractService
 {
     protected $serviceName = 'Curl';
 
-    public function download()
+    /**
+     * @var Curl
+     */
+    protected $client;
+
+    protected function setProxy()
     {
-        $headers = [
-            'Content-Type' => 'text/plain',
-            'User-Agent' => 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.10 (KHTML, like Gecko) Chrome/7.0.540.0 Safari/534.10',
-        ];
+        $gateway = GatewayService::getInstance();
+        $proxy = $gateway->getDataObject('RU');
 
-        $client = new Curl();
-        $client->setHeaders($headers);
-        $client->get($this->requestUrls);
+        $this->client->setProxy($proxy->ip, $proxy->port);
 
-        file_put_contents(PATH_STORAGE . DIRECTORY_SEPARATOR . microtime(true).'.'.$this->getServiceName().'.html', $client->getResponse());
+        if (!is_null($proxy->socket_type)) {
+            $this->client->setProxyType($proxy->socket_type);
+        }
 
-        $this->responseCode = $client->getHttpStatusCode();
-        $this->responseHeaders = $client->getResponseHeaders();
-        $this->responseContent = $client->getResponse();
+        $this->client->setOpt(CURLOPT_FOLLOWLOCATION, true);
+    }
 
-        $client->close();
+    public function download($is_proxy = false)
+    {
+        $this->client = new Curl();
+        if ($is_proxy) {
+            $this->setProxy();
+        }
+        $this->client->setHeaders($this->getRequestHeaders());
+        $this->client->get($this->requestUrls);
+
+        $this->responseCode = $this->client->getHttpStatusCode();
+        $this->responseHeaders = $this->client->getResponseHeaders();
+        $this->responseContent = $this->client->getRawResponse();
+
+        file_put_contents(PATH_STORAGE . DIRECTORY_SEPARATOR . microtime(true).'.'.$this->getServiceName().'.html', $this->responseContent);
+
+        $this->client->close();
     }
 }

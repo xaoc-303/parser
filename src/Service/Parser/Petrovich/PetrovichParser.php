@@ -3,7 +3,7 @@
 namespace Service\Parser\Petrovich;
 
 use Service\Downloader\DownloaderInterface;
-use Service\Downloader\ReactPhp\DownloaderProxyService;
+use Service\Downloader\Curl\DownloaderProxyService;
 use Service\Parser\Petrovich\Handler\InterfaceHandler;
 use Service\Parser\Petrovich\Handler\ItemHandler;
 use Service\Parser\Petrovich\Handler\ListItemsHandler;
@@ -51,7 +51,7 @@ class PetrovichParser
                 $itemUrl = $mainUrl == $url ? $url : $mainUrl.$url;
 
                 $this->downloader = new DownloaderProxyService($itemUrl, $this->alias);
-                $this->downloader->download();
+                $this->downloader->download(true);
 
                 if ($this->downloader->getResponseCode() !== 200) {
                     echo $this->downloader->getResponseCode().PHP_EOL;
